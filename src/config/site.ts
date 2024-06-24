@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Vite + NextUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "OpenAurae",
+  description: "Manage your IoT devices and view real-time sensor metrics.",
   navItems: [
     {
       label: "Home",

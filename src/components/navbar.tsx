@@ -56,8 +56,8 @@ export const Navbar = () => {
             color="foreground"
             href="/"
           >
-            <Logo />
-            <p className="font-bold text-inherit">ACME</p>
+            <Logo size={24} />
+            <p className="font-bold text-inherit">OpenAurae</p>
           </Link>
         </NavbarBrand>
         <div className="ml-2 hidden justify-start gap-4 lg:flex">
