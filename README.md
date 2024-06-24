@@ -32,6 +32,7 @@ npm install
 ### Run the development server
 
 ```bash
+npx husky init
 npm run dev
 ```
 
