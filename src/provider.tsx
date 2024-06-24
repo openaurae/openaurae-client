@@ -1,9 +1,23 @@
+import { Auth0Provider } from "@auth0/auth0-react";
 import { NextUIProvider } from "@nextui-org/system";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
 export function Provider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
-  return <NextUIProvider navigate={navigate}>{children}</NextUIProvider>;
+  const { VITE_AUTH0_CLIENT_ID, VITE_AUTH0_DOMAIN, VITE_AUTH0_AUDIENCE } =
+    import.meta.env;
+
+  return (
+    <Auth0Provider
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        audience: VITE_AUTH0_AUDIENCE,
+      }}
+      clientId={VITE_AUTH0_CLIENT_ID}
+      domain={VITE_AUTH0_DOMAIN}
+    >
+      <NextUIProvider navigate={navigate}>{children}</NextUIProvider>
+    </Auth0Provider>
+  );
 }

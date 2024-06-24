@@ -1,14 +1,17 @@
 import { title } from "@/components/primitives";
 import DefaultLayout from "@/layouts/default";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
 
-export default function DocsPage() {
+const DashboardPage = () => {
   return (
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
         <div className="inline-block max-w-lg justify-center text-center">
-          <h1 className={title()}>Docs</h1>
+          <h1 className={title()}>Dashboard</h1>
         </div>
       </section>
     </DefaultLayout>
   );
-}
+};
+
+export default withAuthenticationRequired(DashboardPage);

@@ -14,18 +14,15 @@ import {
 import { link as linkStyles } from "@nextui-org/theme";
 import clsx from "clsx";
 
-import {
-  DiscordIcon,
-  GithubIcon,
-  HeartFilledIcon,
-  Logo,
-  SearchIcon,
-  TwitterIcon,
-} from "@/components/icons";
+import UserAvatar from "@/components/avatar.tsx";
+import { GithubIcon, Logo, SearchIcon } from "@/components/icons";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { siteConfig } from "@/config/site";
+import { useAuth0User } from "@/hooks/use-user";
 
 export const Navbar = () => {
+  const { isAuthenticated, login, logout } = useAuth0User();
+
   const searchInput = (
     <Input
       aria-label="Search"
@@ -48,11 +45,12 @@ export const Navbar = () => {
   );
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar isBordered maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+        <NavbarMenuToggle className="sm:hidden" />
         <NavbarBrand className="max-w-fit gap-3">
           <Link
-            className="flex items-center justify-start gap-1"
+            className="flex items-center justify-start gap-2"
             color="foreground"
             href="/"
           >
@@ -78,65 +76,61 @@ export const Navbar = () => {
         </div>
       </NavbarContent>
 
+      {/* lg: icons */}
       <NavbarContent
         className="hidden basis-1/5 sm:flex sm:basis-full"
         justify="end"
       >
         <NavbarItem className="hidden gap-2 sm:flex">
-          <Link isExternal href={siteConfig.links.twitter}>
-            <TwitterIcon className="text-default-500" />
-          </Link>
-          <Link isExternal href={siteConfig.links.discord}>
-            <DiscordIcon className="text-default-500" />
-          </Link>
           <Link isExternal href={siteConfig.links.github}>
             <GithubIcon className="text-default-500" />
           </Link>
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-        <NavbarItem className="hidden md:flex">
-          <Button
-            isExternal
-            as={Link}
-            className="bg-default-100 text-sm font-normal text-default-600"
-            href={siteConfig.links.sponsor}
-            startContent={<HeartFilledIcon className="text-danger" />}
-            variant="flat"
-          >
-            Sponsor
-          </Button>
+        <NavbarItem>
+          {isAuthenticated ? (
+            <UserAvatar />
+          ) : (
+            <Button as={Link} color="primary" variant="flat" onClick={login}>
+              Log In
+            </Button>
+          )}
         </NavbarItem>
       </NavbarContent>
 
+      {/* sm: icons */}
       <NavbarContent className="basis-1 pl-4 sm:hidden" justify="end">
         <Link isExternal href={siteConfig.links.github}>
           <GithubIcon className="text-default-500" />
         </Link>
         <ThemeSwitch />
-        <NavbarMenuToggle />
+        <NavbarItem>
+          {isAuthenticated ? (
+            <UserAvatar />
+          ) : (
+            <Button as={Link} color="primary" variant="flat" onClick={login}>
+              Log In
+            </Button>
+          )}
+        </NavbarItem>
       </NavbarContent>
 
       <NavbarMenu>
         {searchInput}
         <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
+          {siteConfig.navMenuItems.map((item) => (
+            <NavbarMenuItem key={item.label}>
+              <Link color="foreground" href={item.href} size="lg">
                 {item.label}
               </Link>
             </NavbarMenuItem>
           ))}
+          <NavbarMenuItem key="logout" hidden={!isAuthenticated}>
+            <Link as="button" color="danger" size="lg" onClick={logout}>
+              Log Out
+            </Link>
+          </NavbarMenuItem>
         </div>
       </NavbarMenu>
     </NextUINavbar>
