@@ -14,7 +14,7 @@ import {
 import { link as linkStyles } from "@nextui-org/theme";
 import clsx from "clsx";
 
-import UserAvatar from "@/components/avatar.tsx";
+import UserAvatar from "@/components/avatar";
 import { GithubIcon, Logo, SearchIcon } from "@/components/icons";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { siteConfig } from "@/config/site";
@@ -45,7 +45,7 @@ export const Navbar = () => {
   );
 
   return (
-    <NextUINavbar isBordered maxWidth="xl" position="sticky">
+    <NextUINavbar isBordered maxWidth="full" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarMenuToggle className="sm:hidden" />
         <NavbarBrand className="max-w-fit gap-3">
