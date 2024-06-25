@@ -11,11 +11,10 @@ import {
   NavbarMenuToggle,
   Navbar as NextUINavbar,
 } from "@nextui-org/navbar";
-import { link as linkStyles } from "@nextui-org/theme";
-import clsx from "clsx";
 
 import UserAvatar from "@/components/avatar";
 import { GithubIcon, Logo, SearchIcon } from "@/components/icons";
+import { RouteLink } from "@/components/link";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { siteConfig } from "@/config/site";
 import { useAuth0User } from "@/hooks/use-user";
@@ -61,16 +60,7 @@ export const Navbar = () => {
         <div className="ml-2 hidden justify-start gap-4 lg:flex">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
-              <Link
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:font-medium data-[active=true]:text-primary",
-                )}
-                color="foreground"
-                href={item.href}
-              >
-                {item.label}
-              </Link>
+              <RouteLink href={item.href}>{item.label}</RouteLink>
             </NavbarItem>
           ))}
         </div>
