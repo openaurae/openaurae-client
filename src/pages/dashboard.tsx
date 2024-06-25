@@ -1,5 +1,6 @@
-import { title } from "@/components/primitives";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
+
+import { title } from "@/components/primitives";
 
 const DashboardPage = () => {
   return (

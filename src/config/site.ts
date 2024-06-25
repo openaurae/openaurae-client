@@ -5,8 +5,8 @@ export const siteConfig = {
   description: "Manage your IoT devices and view real-time sensor metrics.",
   navItems: [
     {
-      label: "Home",
-      href: "/",
+      label: "Dashboard",
+      href: "/dashboard",
     },
     {
       label: "Devices",
@@ -19,8 +19,8 @@ export const siteConfig = {
   ],
   navMenuItems: [
     {
-      label: "Home",
-      href: "/",
+      label: "Dashboard",
+      href: "/dashboard",
     },
     {
       label: "Devices",
