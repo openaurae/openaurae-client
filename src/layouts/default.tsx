@@ -1,18 +1,13 @@
-import { Link } from "@nextui-org/link";
-import React from "react";
-
 import { Navbar } from "@/components/navbar";
+import { Link } from "@nextui-org/link";
+import { Outlet } from "react-router-dom";
 
-export default function DefaultLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DefaultLayout() {
   return (
     <div className="relative flex h-screen flex-col gap-2 md:gap-4">
       <Navbar />
       <main className="container mx-auto max-w-7xl flex-grow px-4 md:px-6">
-        {children}
+        <Outlet />
       </main>
       <footer className="flex w-full items-center justify-center py-3">
         <Link
