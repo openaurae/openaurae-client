@@ -11,7 +11,8 @@ interface UseMetricsParams {
   metric: string;
   date: string | Date;
   processed: boolean;
-  limit: number;
+  sort: "asc" | "desc";
+  limit?: number;
 }
 
 export interface Metric {
@@ -25,8 +26,9 @@ export const useMetrics = ({
   sensorType,
   metric,
   date,
+  limit,
+  sort,
   processed = true,
-  limit = 10,
 }: UseMetricsParams) => {
   const { accessToken } = useAuth0User();
 
@@ -42,6 +44,7 @@ export const useMetrics = ({
           date: formatDate(date),
           processed,
           limit,
+          sort,
         }
       : null,
     get<Metric[]>,

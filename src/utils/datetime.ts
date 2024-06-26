@@ -1,3 +1,7 @@
+import {
+  DateValue,
+  parseDate as parseCalenderDate,
+} from "@internationalized/date";
 import { format, getTime } from "date-fns";
 
 export const formatDateTime = (value?: string | Date): string => {
@@ -26,4 +30,14 @@ export const formatTime = (value?: string | Date): string => {
 
 export const timestamp = (value?: string | Date): number | undefined => {
   return value ? getTime(value) : undefined;
+};
+
+export const parseDateValue = (
+  datetime?: string | Date,
+): DateValue | undefined => {
+  if (!datetime) {
+    return undefined;
+  }
+
+  return parseCalenderDate(formatDate(datetime));
 };

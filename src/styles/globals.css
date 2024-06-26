@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+button.mapboxgl-popup-close-button {
+  padding: 4px 6px 4px 6px;
+}

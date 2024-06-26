@@ -1,15 +1,12 @@
-import { withAuthenticationRequired } from "@auth0/auth0-react";
-import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import { Skeleton } from "@nextui-org/skeleton";
-import { Spinner } from "@nextui-org/spinner";
-import { useParams } from "react-router-dom";
-
-import { MetricBarChart, MetricLineChart } from "@/components/metric-chart";
+import { MetricChart } from "@/components/metric-chart";
 import { subtitle } from "@/components/primitives";
-import { useMetrics } from "@/hooks/use-metrics";
 import { useDevice } from "@/hooks/user-device";
 import { MetricMeta, Sensor } from "@/types";
-import { formatDate, formatTime } from "@/utils/datetime";
+import { formatDate } from "@/utils/datetime";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { Spinner } from "@nextui-org/spinner";
+import { useParams } from "react-router-dom";
 
 const DeviceDetailsPage = ({}) => {
   const { deviceId } = useParams();
@@ -46,45 +43,6 @@ const SensorLatestMetrics = ({
   sensor: Sensor;
   metricMeta: MetricMeta;
 }) => {
-  const { isLoading, metrics } = useMetrics({
-    deviceId: sensor.device,
-    sensorId: sensor.id,
-    sensorType: sensor.type,
-    metric: metricMeta.name,
-    date: sensor.last_record!,
-    processed: true,
-    limit: metricMeta.isBoolean ? 10 : 20,
-  });
-
-  const formatMetricValue = (value: boolean | number) => {
-    return metricMeta.isBoolean
-      ? value
-        ? "Yes"
-        : "No"
-      : (value as number).toFixed(2) + (metricMeta.unit || "");
-  };
-
-  const renderBody = () => {
-    if (isLoading) {
-      return <Skeleton className="h-full w-full rounded" />;
-    }
-    if (!metrics || metrics.length === 0) {
-      return (
-        <div className="flex h-full flex-col items-center justify-center">
-          <p className="text-default-500">No Data</p>
-        </div>
-      );
-    }
-    const data = metrics.map((metric) => ({
-      ...metric,
-      formattedTime: formatTime(metric.time),
-      formattedValue: formatMetricValue(metric.value),
-    }));
-    const Chart = metricMeta.isBoolean ? MetricBarChart : MetricLineChart;
-
-    return <Chart data={data} metricName={metricMeta.name} />;
-  };
-
   return (
     <Card isPressable className="min-w-sm h-64" onPress={() => {}}>
       <CardHeader className="flex flex-col gap-2 px-4">
@@ -96,7 +54,17 @@ const SensorLatestMetrics = ({
           Latest records from sensor {sensor.id}.
         </span>
       </CardHeader>
-      <CardBody className="h-full">{renderBody()}</CardBody>
+      <CardBody className="h-full">
+        <MetricChart
+          key={`${sensor.id}-${metricMeta.name}`}
+          sensor={sensor}
+          metricMeta={metricMeta}
+          limit={metricMeta.isBoolean ? 10 : 15}
+          processed={true}
+          date={sensor.last_record!}
+          sort="desc"
+        />
+      </CardBody>
     </Card>
   );
 };

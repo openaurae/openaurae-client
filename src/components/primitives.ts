@@ -41,13 +41,29 @@ export const title = tv({
 });
 
 export const subtitle = tv({
-  base: "w-full md:w-1/2 my-2 text-lg lg:text-xl text-default-600 block max-w-full",
+  base: "md:w-1/2 my-2 text-lg lg:text-xl text-default-600 block max-w-full",
   variants: {
     fullWidth: {
-      true: "!w-full",
+      true: "w-full",
+      false: "",
     },
   },
   defaultVariants: {
     fullWidth: true,
+  },
+});
+
+export const metricChart = tv({
+  base: "h-full",
+  variants: {
+    width: {
+      full: "w-full",
+      lg: "w-[2000px]",
+      xl: "w-[3000px]",
+      xxl: "w-[4000px]",
+    },
+  },
+  defaultVariants: {
+    width: "full",
   },
 });

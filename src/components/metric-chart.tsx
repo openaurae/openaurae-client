@@ -9,7 +9,11 @@ import {
   YAxis,
 } from "recharts";
 
-import { Metric } from "@/hooks/use-metrics";
+import { metricChart } from "@/components/primitives";
+import { Metric, useMetrics } from "@/hooks/use-metrics";
+import { MetricMeta, Sensor } from "@/types";
+import { formatDate, formatTime } from "@/utils/datetime";
+import { Skeleton } from "@nextui-org/skeleton";
 
 export interface FormattedMetric extends Metric {
   formattedValue: string;
@@ -17,11 +21,85 @@ export interface FormattedMetric extends Metric {
 }
 
 export interface MetricChartProps {
+  sensor: Sensor;
+  metricMeta: MetricMeta;
+  date: Date | string;
+  limit?: number;
+  processed: boolean;
+  sort: "asc" | "desc";
+  scroll?: boolean;
+}
+
+export const MetricChart = ({
+  sensor,
+  metricMeta,
+  date,
+  limit,
+  processed,
+  sort,
+  scroll = false,
+}: MetricChartProps) => {
+  const { isLoading, metrics } = useMetrics({
+    deviceId: sensor.device,
+    sensorId: sensor.id,
+    sensorType: sensor.type,
+    metric: metricMeta.name,
+    date: formatDate(date),
+    processed,
+    limit,
+    sort,
+  });
+  const formatMetricValue = (value: boolean | number) => {
+    return metricMeta.isBoolean
+      ? value
+        ? "Yes"
+        : "No"
+      : (value as number).toFixed(2) + (metricMeta.unit || "");
+  };
+
+  if (isLoading) {
+    return <Skeleton className="h-full w-full rounded" />;
+  }
+  if (!metrics || metrics.length === 0) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center">
+        <p className="text-default-500">No Data</p>
+      </div>
+    );
+  }
+
+  const data = metrics.map((metric) => ({
+    ...metric,
+    formattedTime: formatTime(metric.time),
+    formattedValue: formatMetricValue(metric.value),
+  }));
+  const Chart = metricMeta.isBoolean ? MetricBarChart : MetricLineChart;
+
+  const widthClass = (scroll: boolean, metricsCount: number) => {
+    if (!scroll) {
+      return "full";
+    } else if (metricsCount < 150) {
+      return "lg";
+    } else if (metricsCount <= 200) {
+      return "xl";
+    } else {
+      return "xxl";
+    }
+  };
+
+  return (
+    <div className={metricChart({ width: widthClass(scroll, metrics.length) })}>
+      <Chart data={data} metricName={metricMeta.name} />
+    </div>
+  );
+};
+
+interface ChartProps {
   metricName: string;
   data: FormattedMetric[];
 }
 
-export function MetricBarChart({ metricName, data }: MetricChartProps) {
+const MetricBarChart = ({ metricName, data }: ChartProps) => {
   return (
     <ResponsiveContainer height="100%" width="100%">
       <BarChart
@@ -58,9 +136,9 @@ export function MetricBarChart({ metricName, data }: MetricChartProps) {
       </BarChart>
     </ResponsiveContainer>
   );
-}
+};
 
-export function MetricLineChart({ metricName, data }: MetricChartProps) {
+const MetricLineChart = ({ metricName, data }: ChartProps) => {
   const values = data.map((metric) => metric.value) as number[];
 
   return (
@@ -96,7 +174,7 @@ export function MetricLineChart({ metricName, data }: MetricChartProps) {
       </LineChart>
     </ResponsiveContainer>
   );
-}
+};
 
 interface TooltipProps {
   formattedTime: string;
@@ -104,11 +182,11 @@ interface TooltipProps {
   metricName: string;
 }
 
-function ValueDetails({
+const ValueDetails = ({
   formattedTime,
   metricName,
   formattedValue,
-}: TooltipProps) {
+}: TooltipProps) => {
   return (
     <div className="rounded-lg border bg-background p-2 shadow-sm">
       <div className="grid grid-cols-2 gap-2">
@@ -127,4 +205,4 @@ function ValueDetails({
       </div>
     </div>
   );
-}
+};
