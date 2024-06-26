@@ -1,15 +1,8 @@
 import useSWR from "swr";
 
 import { useAuth0User } from "@/hooks/use-user";
+import { Device } from "@/types";
 import { get } from "@/utils/query";
-
-export interface Device {
-  id: string;
-  name: string;
-  latitude?: number;
-  longitude?: number;
-  last_record?: string;
-}
 
 export const useDevices = () => {
   const { accessToken } = useAuth0User();

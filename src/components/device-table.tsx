@@ -1,4 +1,5 @@
 import { Input } from "@nextui-org/input";
+import { Link } from "@nextui-org/link";
 import { Pagination } from "@nextui-org/pagination";
 import { Spinner } from "@nextui-org/spinner";
 import {
@@ -15,7 +16,8 @@ import clsx from "clsx";
 import { Download, Eye, Pencil, Search, Trash2 } from "lucide-react";
 import React, { useCallback, useMemo, useState } from "react";
 
-import { Device, useDevices } from "@/hooks/use-devices";
+import { useDevices } from "@/hooks/use-devices";
+import { Device } from "@/types";
 import { formatDateTime, timestamp } from "@/utils/datetime";
 import { sortByNumericField, sortByStringField } from "@/utils/sort";
 
@@ -210,11 +212,16 @@ const Actions = ({
   className,
 }: React.ComponentProps<"div"> & { deviceId: string }) => {
   return (
-    <div className={clsx("relative flex items-center gap-4", className)}>
+    <div
+      className={clsx(
+        "relative flex items-center justify-center gap-4 py-1",
+        className,
+      )}
+    >
       <Tooltip content="View Details">
-        <span className="cursor-pointer text-lg text-default-400 active:opacity-50">
-          <Eye size={20} />
-        </span>
+        <Link href={`/devices/${deviceId}`}>
+          <Eye className="text-lg text-default-400" size={20} />
+        </Link>
       </Tooltip>
       <Tooltip content="Edit Device">
         <span className="cursor-pointer text-lg text-default-400 active:opacity-50">

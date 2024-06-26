@@ -45,6 +45,7 @@ export const Navbar = () => {
 
   return (
     <NextUINavbar isBordered maxWidth="full" position="sticky">
+      {/* nav links */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarMenuToggle className="sm:hidden" />
         <NavbarBrand className="max-w-fit gap-3">
@@ -57,7 +58,7 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">OpenAurae</p>
           </Link>
         </NavbarBrand>
-        <div className="ml-2 hidden justify-start gap-4 lg:flex">
+        <div className="ml-2 hidden justify-start gap-4 pl-4 md:flex">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <RouteLink href={item.href}>{item.label}</RouteLink>
