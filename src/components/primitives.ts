@@ -41,11 +41,10 @@ export const title = tv({
 });
 
 export const subtitle = tv({
-  base: "md:w-1/2 my-2 text-lg lg:text-xl text-default-600 block max-w-full",
+  base: "block my-2 text-lg lg:text-xl text-default-600 max-w-full",
   variants: {
     fullWidth: {
       true: "w-full",
-      false: "",
     },
   },
   defaultVariants: {
@@ -58,9 +57,13 @@ export const metricChart = tv({
   variants: {
     width: {
       full: "w-full",
+      tiny: "w-[300px]",
+      md: "w-[1000px]",
       lg: "w-[2000px]",
-      xl: "w-[3000px]",
-      xxl: "w-[4000px]",
+      xl: "w-[4000px]",
+      xxl: "w-[6000px]",
+      huge: "w-[1000px]",
+      max: "w-[20000px]",
     },
   },
   defaultVariants: {

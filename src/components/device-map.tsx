@@ -59,11 +59,11 @@ const buildPopup = ({
 <div class="rounded-lg m-2 grid grid-cols-2">
   <div class="flex flex-col">
     <span class="text-default-500 uppercase">Name</span>
-    <span class="font-bold">${name}</span>
+    <span class="text-foreground font-bold">${name}</span>
   </div>
   <div class="flex flex-col">
     <span class="text-default-500 uppercase">Last Record</span>
-    <span class="font-bold">${formatDateTime(last_record)}</span>
+    <span class="text-foreground font-bold">${formatDateTime(last_record)}</span>
   </div>
 </div>`;
 

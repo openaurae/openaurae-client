@@ -4,14 +4,14 @@ import { useAuth0User } from "@/hooks/use-user";
 import { formatDate } from "@/utils/datetime";
 import { get } from "@/utils/query";
 
-interface UseMetricsParams {
+export interface UseMetricsParams {
   deviceId: string;
   sensorId: string;
   sensorType: string;
   metric: string;
   date: string | Date;
   processed: boolean;
-  sort: "asc" | "desc";
+  order: "asc" | "desc";
   limit?: number;
 }
 
@@ -27,7 +27,7 @@ export const useMetrics = ({
   metric,
   date,
   limit,
-  sort,
+  order,
   processed = true,
 }: UseMetricsParams) => {
   const { accessToken } = useAuth0User();
@@ -44,7 +44,7 @@ export const useMetrics = ({
           date: formatDate(date),
           processed,
           limit,
-          sort,
+          order: order,
         }
       : null,
     get<Metric[]>,

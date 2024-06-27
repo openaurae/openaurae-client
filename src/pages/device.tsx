@@ -62,7 +62,7 @@ const SensorLatestMetrics = ({
           limit={metricMeta.isBoolean ? 10 : 15}
           processed={true}
           date={sensor.last_record!}
-          sort="desc"
+          order="desc"
         />
       </CardBody>
     </Card>

@@ -10,7 +10,7 @@ import {
 } from "recharts";
 
 import { metricChart } from "@/components/primitives";
-import { Metric, useMetrics } from "@/hooks/use-metrics";
+import { Metric, useMetrics, UseMetricsParams } from "@/hooks/use-metrics";
 import { MetricMeta, Sensor } from "@/types";
 import { formatDate, formatTime } from "@/utils/datetime";
 import { Skeleton } from "@nextui-org/skeleton";
@@ -20,15 +20,11 @@ export interface FormattedMetric extends Metric {
   formattedTime: string;
 }
 
-export interface MetricChartProps {
+export type MetricChartProps = {
   sensor: Sensor;
   metricMeta: MetricMeta;
-  date: Date | string;
-  limit?: number;
-  processed: boolean;
-  sort: "asc" | "desc";
   scroll?: boolean;
-}
+} & Pick<UseMetricsParams, "limit" | "processed" | "date" | "order">;
 
 export const MetricChart = ({
   sensor,
@@ -36,7 +32,7 @@ export const MetricChart = ({
   date,
   limit,
   processed,
-  sort,
+  order,
   scroll = false,
 }: MetricChartProps) => {
   const { isLoading, metrics } = useMetrics({
@@ -47,7 +43,7 @@ export const MetricChart = ({
     date: formatDate(date),
     processed,
     limit,
-    sort,
+    order,
   });
   const formatMetricValue = (value: boolean | number) => {
     return metricMeta.isBoolean
@@ -75,23 +71,31 @@ export const MetricChart = ({
   }));
   const Chart = metricMeta.isBoolean ? MetricBarChart : MetricLineChart;
 
-  const widthClass = (scroll: boolean, metricsCount: number) => {
-    if (!scroll) {
-      return "full";
-    } else if (metricsCount < 150) {
-      return "lg";
-    } else if (metricsCount <= 200) {
-      return "xl";
-    } else {
-      return "xxl";
-    }
-  };
-
   return (
     <div className={metricChart({ width: widthClass(scroll, metrics.length) })}>
       <Chart data={data} metricName={metricMeta.name} />
     </div>
   );
+};
+
+const widthClass = (scroll: boolean, metricsCount: number) => {
+  if (!scroll) {
+    return "full";
+  } else if (metricsCount < 10) {
+    return "tiny";
+  } else if (metricsCount < 50) {
+    return "md";
+  } else if (metricsCount < 100) {
+    return "lg";
+  } else if (metricsCount < 200) {
+    return "xl";
+  } else if (metricsCount < 400) {
+    return "xxl";
+  } else if (metricsCount < 500) {
+    return "huge";
+  } else {
+    return "max";
+  }
 };
 
 interface ChartProps {
