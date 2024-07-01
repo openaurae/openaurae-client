@@ -6,12 +6,18 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { Provider } from "./provider";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Provider>
-        <App />
-      </Provider>
-    </BrowserRouter>
-  </React.StrictMode>,
+const root = document.getElementById("root");
+
+if (!root) {
+	throw new Error("root not found");
+}
+
+ReactDOM.createRoot(root).render(
+	<React.StrictMode>
+		<BrowserRouter>
+			<Provider>
+				<App />
+			</Provider>
+		</BrowserRouter>
+	</React.StrictMode>,
 );
