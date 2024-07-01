@@ -6,9 +6,10 @@
 	"scripts": {
 		"dev": "vite --port 3000",
 		"build": "tsc && vite build",
+		"start": "vite --host 0.0.0.0 --port 3000",
 		"preview": "vite preview",
 		"format": "npx @biomejs/biome check --write",
-		"prepare": "lefthook install"
+		"lefthook": "lefthook install"
 	},
 	"dependencies": {
 		"@auth0/auth0-react": "^2.2.4",

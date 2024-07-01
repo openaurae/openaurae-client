@@ -22,7 +22,7 @@ via `nextui init`.
 
 ```bash
 npm install # install dependencies
-npx run prepare # install pre-commit hooks
+npx run lefthook # install pre-commit hooks
 
 npm run dev # run the dev server
 ```
