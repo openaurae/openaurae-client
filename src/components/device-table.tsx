@@ -1,5 +1,13 @@
 import { Input } from "@nextui-org/input";
-import { Link } from "@nextui-org/link";
+import { Link, LinkProps } from "@nextui-org/link";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@nextui-org/modal";
 import { Pagination } from "@nextui-org/pagination";
 import { Spinner } from "@nextui-org/spinner";
 import {
@@ -11,15 +19,22 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/table";
+
 import { Tooltip } from "@nextui-org/tooltip";
 import clsx from "clsx";
 import { Download, Eye, Pencil, Search, Trash2 } from "lucide-react";
 import React, { useCallback, useMemo, useState } from "react";
 
 import { useDevices } from "@/hooks/use-devices";
+import { useAuth0User } from "@/hooks/use-user.ts";
 import { Device } from "@/types";
-import { formatDateTime, timestamp } from "@/utils/datetime";
+import { formatDate, formatDateTime, timestamp } from "@/utils/datetime";
 import { sortByNumericField, sortByStringField } from "@/utils/sort";
+import { parseDate } from "@internationalized/date";
+import { Button } from "@nextui-org/button";
+import { DateRangePicker } from "@nextui-org/date-picker";
+import { DateValue } from "@react-types/datepicker";
+import { RangeValue } from "@react-types/shared";
 
 const columns = [
   {
@@ -160,7 +175,7 @@ const DeviceTable = () => {
       case "last_record":
         return <span>{formatDateTime(device.last_record)}</span>;
       case "actions":
-        return <Actions className="px-6" deviceId={device.id} />;
+        return <Actions className="px-6" device={device} />;
     }
   }, []);
 
@@ -207,38 +222,96 @@ const DeviceTable = () => {
   );
 };
 
+const ExportRecordsButton = ({ device }: { device: Device }) => {
+  const { accessToken } = useAuth0User();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [value, setValue] = useState<RangeValue<DateValue>>({
+    start: parseDate(formatDate(device.last_record || new Date())),
+    end: parseDate(formatDate(device.last_record || new Date())),
+  });
+
+  return (
+    <>
+      <Tooltip content="Export Sensor Records">
+        <TooltipButton onPress={onOpen}>
+          <Download size={20} />
+        </TooltipButton>
+      </Tooltip>
+
+      <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <div>
+              <ModalHeader>Download Device Records</ModalHeader>
+              <ModalBody>
+                <DateRangePicker
+                  className="max-w-xs"
+                  label="Date Range"
+                  value={value}
+                  onChange={setValue}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="danger"
+                  isDisabled={!accessToken}
+                  variant="flat"
+                  onPress={onClose}
+                >
+                  Close
+                </Button>
+                <Link
+                  href={`${import.meta.env.VITE_API_BASE_URL}/export/csv/readings?accessToken=${accessToken}&deviceId=${device.id}&start=${value.start.toString()}&end=${value.end.toString()}`}
+                >
+                  <Button color="primary" onPress={onClose}>
+                    Download
+                  </Button>
+                </Link>
+              </ModalFooter>
+            </div>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
 const Actions = ({
-  deviceId,
+  device,
   className,
-}: React.ComponentProps<"div"> & { deviceId: string }) => {
+}: React.ComponentProps<"div"> & { device: Device }) => {
   return (
     <div
       className={clsx(
-        "relative flex items-center justify-center gap-4 py-1",
+        "relative flex items-center justify-center gap-3 py-1",
         className,
       )}
     >
       <Tooltip content="View Details">
-        <Link href={`/devices/${deviceId}`}>
-          <Eye className="text-lg text-default-400" size={20} />
-        </Link>
+        <TooltipButton as="a" href={`/devices/${device.id}`}>
+          <Eye size={20} />
+        </TooltipButton>
       </Tooltip>
       <Tooltip content="Edit Device">
-        <span className="cursor-pointer text-lg text-default-400 active:opacity-50">
+        <TooltipButton>
           <Pencil size={20} />
-        </span>
+        </TooltipButton>
       </Tooltip>
-      <Tooltip content="Export Sensor Records">
-        <span className="cursor-pointer text-lg text-default-400 active:opacity-50">
-          <Download size={20} />
-        </span>
-      </Tooltip>
+      <ExportRecordsButton device={device} />
       <Tooltip color="danger" content="Delete Device">
-        <span className="cursor-pointer text-lg text-danger active:opacity-50">
+        <TooltipButton className="text-danger">
           <Trash2 size={20} />
-        </span>
+        </TooltipButton>
       </Tooltip>
     </div>
+  );
+};
+
+const TooltipButton = ({ children, ...props }: LinkProps) => {
+  return (
+    <Link className="text-lg text-default-400" as="button" {...props}>
+      {children}
+    </Link>
   );
 };
 

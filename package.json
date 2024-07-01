@@ -32,6 +32,7 @@
     "@nextui-org/input": "^2.2.2",
     "@nextui-org/kbd": "2.0.30",
     "@nextui-org/link": "2.0.32",
+    "@nextui-org/modal": "^2.0.36",
     "@nextui-org/navbar": "2.0.33",
     "@nextui-org/pagination": "^2.0.33",
     "@nextui-org/select": "^2.2.2",
