@@ -166,15 +166,23 @@ const DeviceTable = () => {
 	const renderCell = useCallback((device: Device, columnKey: React.Key) => {
 		switch (columnKey) {
 			case "id":
-				return <span>{device.id}</span>;
+				return <p className="w-full text-center">{device.id}</p>;
 			case "name":
-				return <span>{device.name}</span>;
+				return <p className="w-full text-center">{device.name}</p>;
 			case "longitude":
-				return <span>{device.longitude?.toFixed(6)}</span>;
+				return (
+					<p className="w-full text-center">{device.longitude?.toFixed(6)}</p>
+				);
 			case "latitude":
-				return <span>{device.latitude?.toFixed(6)}</span>;
+				return (
+					<p className="w-full text-center">{device.latitude?.toFixed(6)}</p>
+				);
 			case "last_record":
-				return <span>{formatDateTime(device.last_record)}</span>;
+				return (
+					<p className="w-full text-center">
+						{formatDateTime(device.last_record)}
+					</p>
+				);
 			case "actions":
 				return <Actions className="px-6" device={device} />;
 		}
