@@ -12,10 +12,6 @@ export const siteConfig = {
 			label: "Devices",
 			href: "/devices",
 		},
-		{
-			label: "About",
-			href: "/about",
-		},
 	],
 	navMenuItems: [
 		{

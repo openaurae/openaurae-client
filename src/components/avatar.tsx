@@ -42,8 +42,7 @@ const UserAvatar: React.FC = () => {
 					<p className="font-semibold">Signed in as</p>
 					<p className="font-semibold">{user.email}</p>
 				</DropdownItem>
-				<DropdownItem key="settings">My Settings</DropdownItem>
-				<DropdownItem key="analytics">Analytics</DropdownItem>
+				<DropdownItem key="settings">Settings</DropdownItem>
 				<DropdownItem
 					key="copy_access_token"
 					color="warning"
