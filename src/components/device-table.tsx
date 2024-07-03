@@ -22,11 +22,12 @@ import {
 
 import { Tooltip } from "@nextui-org/tooltip";
 import clsx from "clsx";
-import { Download, Eye, Pencil, Search, Trash2 } from "lucide-react";
+import { Download, Eye, Search, Trash2 } from "lucide-react";
 import type React from "react";
 import { useCallback, useMemo, useState } from "react";
 
 import { AddDeviceButton } from "@/components/add-device";
+import { UpdateDeviceButton } from "@/components/update-device";
 import { useDevices } from "@/hooks/use-devices";
 import { useAuth0User } from "@/hooks/use-user.ts";
 import type { Device } from "@/types";
@@ -303,12 +304,11 @@ const Actions = ({
 					<Eye size={20} />
 				</TooltipButton>
 			</Tooltip>
-			<Tooltip content="Edit Device">
-				<TooltipButton>
-					<Pencil size={20} />
-				</TooltipButton>
-			</Tooltip>
+
+			<UpdateDeviceButton device={device} />
+
 			<ExportRecordsButton device={device} />
+
 			<Tooltip color="danger" content="Delete Device">
 				<TooltipButton className="text-danger">
 					<Trash2 size={20} />
