@@ -16,21 +16,33 @@ const DeviceDetailsPage = () => {
 		return <Spinner label="loading" size="lg" />;
 	}
 
+	if (!device) {
+		return <section>Device Not Found</section>;
+	}
+
+	const sensors = device.sensors;
+
 	return (
 		device && (
 			<section>
 				<h1 className={subtitle()}>Device {device.name || device.id}</h1>
-				<div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
-					{device.sensors.map((sensor) =>
-						sensor.metrics.map((metricMeta) => (
-							<SensorLatestMetrics
-								key={`${sensor.id}-${metricMeta.name}`}
-								metricMeta={metricMeta}
-								sensor={sensor}
-							/>
-						)),
-					)}
-				</div>
+				{sensors.length === 0 ? (
+					<div className="text-lg w-full h-[60vh] flex justify-center items-center">
+						No sensor
+					</div>
+				) : (
+					<div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
+						{device.sensors.map((sensor) =>
+							sensor.metrics.map((metricMeta) => (
+								<SensorLatestMetrics
+									key={`${sensor.id}-${metricMeta.name}`}
+									metricMeta={metricMeta}
+									sensor={sensor}
+								/>
+							)),
+						)}
+					</div>
+				)}
 			</section>
 		)
 	);
