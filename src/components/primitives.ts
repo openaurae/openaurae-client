@@ -51,22 +51,3 @@ export const subtitle = tv({
 		fullWidth: true,
 	},
 });
-
-export const metricChart = tv({
-	base: "h-full",
-	variants: {
-		width: {
-			full: "w-full",
-			tiny: "w-[300px]",
-			md: "w-[1000px]",
-			lg: "w-[2000px]",
-			xl: "w-[4000px]",
-			xxl: "w-[6000px]",
-			huge: "w-[1000px]",
-			max: "w-[20000px]",
-		},
-	},
-	defaultVariants: {
-		width: "full",
-	},
-});

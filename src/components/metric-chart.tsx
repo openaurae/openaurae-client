@@ -9,7 +9,6 @@ import {
 	YAxis,
 } from "recharts";
 
-import { metricChart } from "@/components/primitives";
 import {
 	type Metric,
 	type UseMetricsParams,
@@ -76,35 +75,15 @@ export const MetricChart = ({
 	const Chart = metricMeta.isBoolean ? MetricBarChart : MetricLineChart;
 
 	return (
-		<div className={metricChart({ width: widthClass(scroll, metrics.length) })}>
+		<div
+			style={{
+				width: scroll ? `${32 * metrics.length}px` : "100%",
+				height: "100%",
+			}}
+		>
 			<Chart data={data} metricName={metricMeta.name} />
 		</div>
 	);
-};
-
-const widthClass = (scroll: boolean, metricsCount: number) => {
-	if (!scroll) {
-		return "full";
-	}
-	if (metricsCount < 10) {
-		return "tiny";
-	}
-	if (metricsCount < 50) {
-		return "md";
-	}
-	if (metricsCount < 100) {
-		return "lg";
-	}
-	if (metricsCount < 200) {
-		return "xl";
-	}
-	if (metricsCount < 400) {
-		return "xxl";
-	}
-	if (metricsCount < 500) {
-		return "huge";
-	}
-	return "max";
 };
 
 interface ChartProps {
