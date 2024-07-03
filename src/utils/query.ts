@@ -38,3 +38,30 @@ export const postJson = async <T>({
 
 	return resp.data;
 };
+
+export const putJson = async <T>({
+	url,
+	accessToken,
+	...body
+}: QueryParams): Promise<T> => {
+	const resp = await _axios.put<T>(url, body, {
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
+
+	return resp.data;
+};
+
+export const remove = async <T>({
+	url,
+	accessToken,
+}: QueryParams): Promise<T> => {
+	const resp = await _axios.delete<T>(url, {
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
+
+	return resp.data;
+};

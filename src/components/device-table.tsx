@@ -26,6 +26,7 @@ import { Download, Eye, Pencil, Search, Trash2 } from "lucide-react";
 import type React from "react";
 import { useCallback, useMemo, useState } from "react";
 
+import { AddDeviceButton } from "@/components/add-device";
 import { useDevices } from "@/hooks/use-devices";
 import { useAuth0User } from "@/hooks/use-user.ts";
 import type { Device } from "@/types";
@@ -116,7 +117,7 @@ const DeviceTable = () => {
 	const topContent = useMemo(() => {
 		return (
 			<div className="flex flex-col gap-4">
-				<div className="flex">
+				<div className="flex justify-between items-center gap-2">
 					<Input
 						isClearable
 						className="w-full sm:max-w-sm"
@@ -126,6 +127,7 @@ const DeviceTable = () => {
 						onClear={() => setSearchValue("")}
 						onValueChange={onSearchChange}
 					/>
+					<AddDeviceButton />
 				</div>
 				<div className="flex items-center justify-between">
 					<span className="text-small text-default-400">Total {n} devices</span>
