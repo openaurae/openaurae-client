@@ -83,18 +83,29 @@ const DeviceTable = () => {
 		direction: "descending",
 	});
 
-	const n = devices?.length || 0;
-	const pages = Math.ceil(n / rowsPerPage);
+	// const totalDevices = devices?.length || 0;
+	// const pages = Math.ceil(totalDevices / rowsPerPage);
 
 	const filteredDevices = useMemo(() => {
 		let result = devices || [];
 
 		if (searchValue) {
-			result = result.filter((device) => device.id.includes(searchValue));
+			result = result.filter(
+				(device) =>
+					device.id.includes(searchValue) || device.name.includes(searchValue),
+			);
 		}
 
 		return result;
 	}, [searchValue, devices]);
+
+	const totalDevices = useMemo(() => {
+		return filteredDevices.length;
+	}, [filteredDevices.length]);
+
+	const pages = useMemo(() => {
+		return Math.ceil(totalDevices / rowsPerPage);
+	}, [totalDevices, rowsPerPage]);
 
 	const sortedDevices = useMemo(() => {
 		const start = (page - 1) * rowsPerPage;
@@ -123,7 +134,7 @@ const DeviceTable = () => {
 					<Input
 						isClearable
 						className="w-full sm:max-w-sm"
-						placeholder="Search by id..."
+						placeholder="Search by id or name..."
 						startContent={<Search size={20} />}
 						value={searchValue}
 						onClear={() => setSearchValue("")}
@@ -132,7 +143,9 @@ const DeviceTable = () => {
 					<AddDeviceButton />
 				</div>
 				<div className="flex items-center justify-between">
-					<span className="text-small text-default-400">Total {n} devices</span>
+					<span className="text-small text-default-400">
+						Total {totalDevices} devices
+					</span>
 					<label className="flex items-center text-small text-default-400">
 						Rows per page:
 						<select
@@ -149,7 +162,7 @@ const DeviceTable = () => {
 				</div>
 			</div>
 		);
-	}, [n, onRowsPerPageChange, onSearchChange, searchValue]);
+	}, [totalDevices, onRowsPerPageChange, onSearchChange, searchValue]);
 
 	const bottomContent = useMemo(() => {
 		return (
