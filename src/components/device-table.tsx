@@ -1,5 +1,5 @@
 import { Input } from "@nextui-org/input";
-import { Link, type LinkProps } from "@nextui-org/link";
+import { Link } from "@nextui-org/link";
 import {
 	Modal,
 	ModalBody,
@@ -22,11 +22,12 @@ import {
 
 import { Tooltip } from "@nextui-org/tooltip";
 import clsx from "clsx";
-import { Download, Eye, Search, Trash2 } from "lucide-react";
+import { Download, Eye, Search } from "lucide-react";
 import type React from "react";
 import { useCallback, useMemo, useState } from "react";
 
 import { AddDeviceButton } from "@/components/add-device";
+import { DeleteDeviceButton } from "@/components/delete-device.tsx";
 import { UpdateDeviceButton } from "@/components/update-device";
 import { useDevices } from "@/hooks/use-devices";
 import { useAuth0User } from "@/hooks/use-user.ts";
@@ -245,9 +246,9 @@ const ExportRecordsButton = ({ device }: { device: Device }) => {
 	return (
 		<>
 			<Tooltip content="Export Sensor Records">
-				<TooltipButton onPress={onOpen}>
+				<Link className="text-lg text-default-400" as="button" onPress={onOpen}>
 					<Download size={20} />
-				</TooltipButton>
+				</Link>
 			</Tooltip>
 
 			<Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -300,29 +301,21 @@ const Actions = ({
 			)}
 		>
 			<Tooltip content="View Details">
-				<TooltipButton as="a" href={`/devices/${device.id}`}>
+				<Link
+					className="text-lg text-default-400"
+					as="a"
+					href={`/devices/${device.id}`}
+				>
 					<Eye size={20} />
-				</TooltipButton>
+				</Link>
 			</Tooltip>
 
 			<UpdateDeviceButton device={device} />
 
 			<ExportRecordsButton device={device} />
 
-			<Tooltip color="danger" content="Delete Device">
-				<TooltipButton className="text-danger">
-					<Trash2 size={20} />
-				</TooltipButton>
-			</Tooltip>
+			<DeleteDeviceButton device={device} />
 		</div>
-	);
-};
-
-const TooltipButton = ({ children, ...props }: LinkProps) => {
-	return (
-		<Link className="text-lg text-default-400" as="button" {...props}>
-			{children}
-		</Link>
 	);
 };
 
