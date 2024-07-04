@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import DefaultLayout from "@/layouts/default";
 import DashboardPage from "@/pages/dashboard";
@@ -9,7 +9,11 @@ const App = () => {
 	return (
 		<Routes>
 			<Route element={<DefaultLayout />}>
-				<Route index element={<DashboardPage />} path="/" />
+				<Route
+					index
+					element={<Navigate to="/dashboard" replace={true} />}
+					path="/"
+				/>
 				<Route element={<DashboardPage />} path="/dashboard" />
 				<Route element={<DevicesPage />} path="/devices" />
 				<Route element={<DeviceDetailsPage />} path="/devices/:deviceId" />
