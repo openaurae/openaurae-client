@@ -3,7 +3,7 @@ import { MetricChart } from "@/components/metric-chart";
 import { subtitle } from "@/components/primitives";
 import { useDevices } from "@/hooks/use-devices";
 import { useDevice } from "@/hooks/user-device";
-import type { MetricMeta, Sensor } from "@/types";
+import type { Device, MetricMeta, Sensor } from "@/types";
 import { parseDateValue } from "@/utils/datetime";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import type { DateValue } from "@internationalized/date";
@@ -16,7 +16,7 @@ import { useMemo, useState } from "react";
 
 const DashboardPage = () => {
 	const { isLoading, devices } = useDevices();
-	const [selectedDeviceId, setSelectedDeviceId] = useState<string | undefined>(
+	const [selectedDevice, setSelectedDevice] = useState<Device | undefined>(
 		undefined,
 	);
 
@@ -37,12 +37,13 @@ const DashboardPage = () => {
 				</div>
 			</div>
 
-			<Card className="h-[60vh]">
+			<Card className={selectedDevice ? "h-[35vh]" : "h-[70vh]"}>
 				<CardBody>
 					{isLoading ? (
 						<Skeleton className="h-full w-full" />
 					) : (
 						<DevicesMap
+							// key={`device-map-${(!!selectedDeviceId)}`}
 							devices={filtered}
 							mapStyle="mapbox://styles/mapbox/light-v9"
 							viewPort={{
@@ -50,7 +51,9 @@ const DashboardPage = () => {
 								longitude: 145.134424,
 								zoom: 10,
 							}}
-							onDeviceSelected={(device) => setSelectedDeviceId(device.id)}
+							height={selectedDevice ? "35vh" : "70vh"}
+							selectedDevice={selectedDevice}
+							setSelectedDevice={(device) => setSelectedDevice(device)}
 						/>
 					)}
 				</CardBody>
@@ -58,8 +61,8 @@ const DashboardPage = () => {
 
 			{/* set key to force re-render when selected device changes,
       otherwise values of select inputs will be cached across devices*/}
-			{selectedDeviceId && (
-				<DeviceCard key={selectedDeviceId} deviceId={selectedDeviceId} />
+			{selectedDevice && (
+				<DeviceCard key={selectedDevice.id} deviceId={selectedDevice.id} />
 			)}
 		</section>
 	);
@@ -118,6 +121,7 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 					</div>
 					<div className="flex w-full flex-col gap-2 lg:w-1/2 lg:flex-row">
 						<Select
+							isDisabled={sensors.length === 0}
 							items={sensors}
 							size="sm"
 							label="Sensor"
@@ -152,6 +156,7 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 							)}
 						</Select>
 						<DatePicker
+							isDisabled={sensors.length === 0}
 							label="Date"
 							className="max-w-full"
 							value={date}
@@ -170,8 +175,13 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 								scroll={scroll}
 							/>
 						) : (
-							<div className="flex h-full flex-row items-center justify-center">
-								<span className="text-default-500">Sensor metrics by date</span>
+							<div className="flex h-full flex-col items-center justify-center">
+								<p className="text-default-500 text-lg">
+									Sensor metrics by date
+								</p>
+								{sensors.length === 0 && (
+									<p className="text-default-500">Device has no sensors</p>
+								)}
 							</div>
 						)}
 					</CardBody>

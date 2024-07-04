@@ -1,8 +1,9 @@
 import type { Device } from "@/types";
 import { formatDateTime } from "@/utils/datetime";
-import mapboxgl, { type Popup } from "mapbox-gl";
+import clsx from "clsx";
+import type React from "react";
 import { useState } from "react";
-import { Marker, Map as ReactMap, type ViewState } from "react-map-gl";
+import { Marker, Popup, Map as ReactMap, type ViewState } from "react-map-gl";
 
 export interface DevicesMapProps {
 	mapStyle: string;
@@ -12,74 +13,111 @@ export interface DevicesMapProps {
 		zoom: number;
 	};
 	devices: Device[];
-	onDeviceSelected: (device: Device) => void;
+	selectedDevice?: Device;
+	setSelectedDevice: (device: Device) => void;
+	height?: string | number;
 }
 
 export const DevicesMap = ({
 	devices,
 	viewPort,
 	mapStyle,
-	onDeviceSelected,
+	setSelectedDevice,
+	selectedDevice,
+	height,
 }: DevicesMapProps) => {
 	const [viewState, setViewState] =
 		useState<Pick<ViewState, "longitude" | "latitude" | "zoom">>(viewPort);
+	const [hoveredDevice, setHoveredDevice] = useState<Device | undefined>(
+		undefined,
+	);
 
 	return (
 		<ReactMap
+			key={height}
 			{...viewState}
 			mapboxAccessToken="pk.eyJ1IjoibW9uYXNoYXVyYWUiLCJhIjoiY2pyMGJqbzV2MDk3dTQ0bndqaHA4d3hzeSJ9.TDvqYvsmY1DHhE8N8_UbFg"
-			style={{ width: "100%", height: "100.5%" }}
+			style={{ width: "100%", height }}
 			mapStyle={mapStyle}
 			onMove={(e) => setViewState(e.viewState)}
 			onZoom={(e) => setViewState(e.viewState)}
 		>
+			{hoveredDevice && <DevicePopup device={hoveredDevice} />}
 			{devices
 				.filter((device) => device.longitude && device.latitude)
 				.map((device) => (
 					<Marker
+						style={{ cursor: "pointer" }}
 						key={device.id}
 						longitude={device.longitude ?? 0}
 						latitude={device.latitude ?? 0}
-						color="red"
-						popup={buildPopup(device)}
-						onClick={() => onDeviceSelected(device)}
+						onClick={() => {
+							setSelectedDevice(device);
+							setViewState({
+								...viewState,
+								latitude: device.latitude ?? 0,
+								longitude: device.longitude ?? 0,
+							});
+						}}
 					>
-						<Pin />
+						<Pin
+							hovered={selectedDevice?.id === device.id}
+							onMouseEnter={() => {
+								setHoveredDevice(device);
+							}}
+							onMouseLeave={() => {
+								setHoveredDevice(undefined);
+							}}
+						/>
 					</Marker>
 				))}
 		</ReactMap>
 	);
 };
 
-const buildPopup = ({
-	name,
-	latitude,
-	longitude,
-	last_record,
-}: Device): Popup => {
-	const html = `
-<div class="rounded-lg m-2 grid grid-cols-2">
-  <div class="flex flex-col">
-    <span class="text-default-500 uppercase">Name</span>
-    <span class="text-foreground font-bold">${name}</span>
-  </div>
-  <div class="flex flex-col">
-    <span class="text-default-500 uppercase">Last Record</span>
-    <span class="text-foreground font-bold">${formatDateTime(last_record)}</span>
-  </div>
-</div>`;
-
-	if (!latitude || !longitude) {
-		throw new Error("latitude and longitude required");
+const DevicePopup = ({ device }: { device?: Device }) => {
+	if (!device || !device.latitude || !device.longitude) {
+		return null;
 	}
 
-	return new mapboxgl.Popup({
-		className: "text-default",
-	})
-		.setLngLat({ lon: longitude, lat: latitude })
-		.setHTML(html);
+	const { name, latitude, longitude, last_record } = device;
+
+	return (
+		<Popup
+			anchor="bottom"
+			closeButton={false}
+			latitude={latitude}
+			longitude={longitude}
+		>
+			<div className="rounded-lg m-2 grid grid-cols-2">
+				<div className="flex flex-col">
+					<span className="text-default-500 uppercase">Name</span>
+					<span className="text-foreground font-bold">{name}</span>
+				</div>
+				<div className="flex flex-col">
+					<span className="text-default-500 uppercase">Last Record</span>
+					<span className="text-foreground font-bold">
+						{formatDateTime(last_record)}
+					</span>
+				</div>
+			</div>
+		</Popup>
+	);
 };
 
-const Pin = () => {
-	return <div className="h-4 w-4 rounded-full bg-[#516b91]" />;
+const Pin = ({
+	className,
+	hovered,
+	...props
+}: React.ComponentProps<"div"> & { hovered: boolean }) => {
+	return (
+		<div
+			{...props}
+			className={clsx(
+				"h-4 w-4 rounded-full",
+				hovered ? "bg-sky-500" : "bg-[#516b91]",
+				className,
+			)}
+		/>
+	);
 };
