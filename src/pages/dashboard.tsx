@@ -91,20 +91,20 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 			: undefined;
 	}, [device, selectedSensorId]);
 
-	const date = useMemo(() => {
-		return datePickerValue
-			? datePickerValue
-			: parseDateValue(sensor?.last_record);
-	}, [datePickerValue, sensor]);
-
 	const metricOptions = useMemo(() => {
 		return sensor?.metrics || [];
 	}, [sensor]);
 
 	const metric = useMemo(() => {
-		return selectedMetric && metricOptions
-			? metricOptions.filter((metric) => metric.name === selectedMetric)[0]
-			: undefined;
+		if (!metricOptions) {
+			return undefined;
+		}
+
+		if (!selectedMetric && metricOptions.length === 1) {
+			return metricOptions[0];
+		}
+
+		return metricOptions.filter((metric) => metric.name === selectedMetric)[0];
 	}, [selectedMetric, metricOptions]);
 
 	return (
@@ -149,6 +149,7 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 							label="Metric"
 							placeholder="Select Metric"
 							className="min-w-20"
+							selectedKeys={metric ? [metric.name] : []}
 							onChange={(e) => setSelectedMetric(e.target.value)}
 						>
 							{(metric) => (
@@ -159,7 +160,7 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 							isDisabled={sensors.length === 0}
 							label="Date"
 							className="max-w-full"
-							value={date}
+							value={datePickerValue || parseDateValue(sensor?.last_record)}
 							size="sm"
 							onChange={setDatePickerValue}
 						/>
@@ -167,11 +168,11 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 				</div>
 				<Card className="min-w-sm h-64 w-full overflow-x-auto">
 					<CardBody className="h-full w-full">
-						{sensor && metric && date ? (
+						{sensor && metric && datePickerValue ? (
 							<SensorMetrics
 								sensor={sensor}
 								metricMeta={metric}
-								date={date.toString()}
+								date={datePickerValue.toString()}
 								scroll={scroll}
 							/>
 						) : (
