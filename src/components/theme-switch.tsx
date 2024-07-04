@@ -4,10 +4,8 @@ import clsx from "clsx";
 import { type FC, useEffect, useState } from "react";
 
 import { useTheme } from "@/hooks/use-theme";
-import {
-	FaMoon as MoonFilledIcon,
-	FaSun as SunFilledIcon,
-} from "react-icons/fa";
+import { BsFillSunFill as SunFilledIcon } from "react-icons/bs";
+import { FaMoon as MoonFilledIcon } from "react-icons/fa";
 
 export interface ThemeSwitchProps {
 	className?: string;
