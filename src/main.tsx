@@ -14,7 +14,7 @@ if (!root) {
 
 ReactDOM.createRoot(root).render(
 	<React.StrictMode>
-		<BrowserRouter basename="/app">
+		<BrowserRouter>
 			<Provider>
 				<App />
 			</Provider>
