@@ -1,3 +1,4 @@
+import { useAuth0User } from "@/hooks/use-user";
 import { Avatar } from "@nextui-org/avatar";
 import {
 	Dropdown,
@@ -6,8 +7,7 @@ import {
 	DropdownTrigger,
 } from "@nextui-org/dropdown";
 import type React from "react";
-
-import { useAuth0User } from "@/hooks/use-user";
+import { toast } from "react-toastify";
 
 const UserAvatar: React.FC = () => {
 	const { user, isLoading, accessToken, logout } = useAuth0User();
@@ -21,7 +21,7 @@ const UserAvatar: React.FC = () => {
 
 	const copyAccessToken = async () => {
 		await navigator.clipboard.writeText(accessToken || "");
-		alert("Token copied");
+		toast("Token copied");
 	};
 
 	return (
