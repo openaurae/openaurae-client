@@ -26,3 +26,9 @@ npx run lefthook # install pre-commit hooks
 
 npm run dev # run the dev server
 ```
+
+## Deploy
+
+```shell
+make bulid
+```

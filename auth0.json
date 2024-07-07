@@ -1,5 +1,5 @@
 {
-	"domain": "aurae.au.auth0.com",
-	"clientId": "NQxeftpzdDTZHj56IEZBGHKogjzc7WRs",
-	"audience": "http://new.openaurae.org/api/"
+	"domain": "dev-5o7n87vv7dzomtek.us.auth0.com",
+	"clientId": "OBzqY3qvI4gxIT2uHGntTDBMjWx4qn55",
+	"audience": "https://app.open-aurae.org/api/"
 }
