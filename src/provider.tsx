@@ -2,6 +2,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import { NextUIProvider } from "@nextui-org/system";
 import type React from "react";
 import { useNavigate } from "react-router-dom";
+
 export function Provider({ children }: { children: React.ReactNode }) {
 	const navigate = useNavigate();
 
@@ -16,6 +17,9 @@ export function Provider({ children }: { children: React.ReactNode }) {
 			}}
 			clientId={VITE_AUTH0_CLIENT_ID}
 			domain={VITE_AUTH0_DOMAIN}
+			onRedirectCallback={(appState) =>
+				navigate(appState?.returnTo || window.location.pathname)
+			}
 		>
 			<NextUIProvider navigate={navigate}>{children}</NextUIProvider>
 		</Auth0Provider>
