@@ -6,7 +6,7 @@ export const siteConfig = {
 	navItems: [
 		{
 			label: "Dashboard",
-			href: "/dashboard",
+			href: "/",
 		},
 		{
 			label: "Devices",
@@ -16,7 +16,7 @@ export const siteConfig = {
 	navMenuItems: [
 		{
 			label: "Dashboard",
-			href: "/dashboard",
+			href: "/",
 		},
 		{
 			label: "Devices",
