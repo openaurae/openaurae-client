@@ -1,5 +1,3 @@
-import { withAuthenticationRequired } from "@auth0/auth0-react";
-
 import DeviceTable from "@/components/device-table";
 
 const DevicesPage = () => {
@@ -10,4 +8,4 @@ const DevicesPage = () => {
 	);
 };
 
-export default withAuthenticationRequired(DevicesPage);
+export default DevicesPage;

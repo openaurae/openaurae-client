@@ -3,7 +3,6 @@ import { subtitle } from "@/components/primitives";
 import { useDevice } from "@/hooks/user-device";
 import type { MetricMeta, Sensor } from "@/types";
 import { formatDate, parseDateValue } from "@/utils/datetime";
-import { withAuthenticationRequired } from "@auth0/auth0-react";
 import type { DateValue } from "@internationalized/date";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { DatePicker } from "@nextui-org/date-picker";
@@ -156,4 +155,4 @@ const SensorLatestMetrics = ({
 	);
 };
 
-export default withAuthenticationRequired(DeviceDetailsPage);
+export default DeviceDetailsPage;

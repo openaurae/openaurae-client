@@ -4,6 +4,7 @@ import DefaultLayout from "@/layouts/default";
 import DashboardPage from "@/pages/dashboard";
 import DeviceDetailsPage from "@/pages/device";
 import DevicesPage from "@/pages/devices";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
 
 const App = () => {
 	return (
@@ -17,4 +18,4 @@ const App = () => {
 	);
 };
 
-export default App;
+export default withAuthenticationRequired(App);

@@ -5,7 +5,6 @@ import { useDevices } from "@/hooks/use-devices";
 import { useDevice } from "@/hooks/user-device";
 import type { Device, MetricMeta, Sensor } from "@/types";
 import { parseDateValue } from "@/utils/datetime";
-import { withAuthenticationRequired } from "@auth0/auth0-react";
 import type { DateValue } from "@internationalized/date";
 import { Card, CardBody } from "@nextui-org/card";
 import { DatePicker } from "@nextui-org/date-picker";
@@ -216,4 +215,4 @@ const SensorMetrics = ({
 	);
 };
 
-export default withAuthenticationRequired(DashboardPage);
+export default DashboardPage;
