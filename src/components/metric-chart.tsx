@@ -77,7 +77,9 @@ export const MetricChart = ({
 	return (
 		<div
 			style={{
-				width: scroll ? `${32 * metrics.length}px` : "100%",
+				// 150px is the minimum width to render tooltip
+				// otherwise avoid sparse charts by assigning fixed width (32px) to each dot/bar
+				width: scroll ? `${Math.max(32 * metrics.length, 150)}px` : "100%",
 				height: "100%",
 			}}
 		>
