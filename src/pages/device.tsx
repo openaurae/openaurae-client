@@ -1,7 +1,7 @@
-import { MetricChart } from "@/components/metric-chart";
+import { MeasureChart } from "@/components/measure-chart.tsx";
 import { subtitle } from "@/components/primitives";
-import { useDevice } from "@/hooks/user-device";
-import type { MetricMeta, Sensor } from "@/types";
+import { useDevice } from "@/hooks/use-device.ts";
+import type { MeasureMetadata, Sensor } from "@/types";
 import { formatDate, parseDateValue } from "@/utils/datetime";
 import type { DateValue } from "@internationalized/date";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
@@ -33,47 +33,43 @@ const DeviceDetailsPage = () => {
 	const sensors = device.sensors;
 
 	return (
-		device && (
-			<section>
-				<h1 className={subtitle()}>Device {device.name || device.id}</h1>
-				<p className="text-default-500 text-sm">
-					Click on cards to view all metrics of sensors
-				</p>
-				{sensors.length === 0 ? (
-					<div className="text-lg w-full h-[60vh] flex justify-center items-center">
-						No sensor
-					</div>
-				) : (
-					<div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
-						{device.sensors.map((sensor) =>
-							sensor.metrics.map((metricMeta) => (
-								<SensorLatestMetrics
-									key={`${sensor.id}-${metricMeta.name}`}
-									metricMeta={metricMeta}
-									sensor={sensor}
-								/>
-							)),
-						)}
-					</div>
-				)}
-			</section>
-		)
+		<section>
+			<h1 className={subtitle()}>Device {device.name || device.id}</h1>
+			<p className="text-default-500 text-sm">
+				Click on cards to view all metrics of sensors
+			</p>
+			{sensors.length === 0 ? (
+				<div className="text-lg w-full h-[60vh] flex justify-center items-center">
+					No sensor
+				</div>
+			) : (
+				<div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
+					{device.sensors.map((sensor) =>
+						sensor.measureMetadata.map((metadata) => (
+							<SensorLatestMetrics
+								key={`${sensor.id}-${metadata.name}`}
+								measureMetadata={metadata}
+								sensor={sensor}
+							/>
+						)),
+					)}
+				</div>
+			)}
+		</section>
 	);
 };
 
 const SensorLatestMetrics = ({
 	sensor,
-	metricMeta,
+	measureMetadata,
 }: {
 	sensor: Sensor;
-	metricMeta: MetricMeta;
+	measureMetadata: MeasureMetadata;
 }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [datePickerValue, setDatePickerValue] = useState<DateValue | undefined>(
 		parseDateValue(sensor?.last_record),
 	);
-
-	console.log(datePickerValue?.toString());
 
 	return (
 		<>
@@ -81,22 +77,22 @@ const SensorLatestMetrics = ({
 				<CardHeader className="flex flex-col gap-2 px-4">
 					<div className="flex w-full justify-between text-lg">
 						<p>
-							<span>{metricMeta.displayName}</span>
+							<span>{measureMetadata.name}</span>
 							{sensor.name && <span> ({sensor.name})</span>}
 						</p>
 						<span>{formatDate(sensor.last_record) || "NA"}</span>
 					</div>
-					<span className="self-start text-sm text-default-500">
-						Latest records from sensor {sensor.id}.
-					</span>
+					<div className="text-sm text-default-500 self-start">
+						Sensor Id: {sensor.id}
+					</div>
 				</CardHeader>
 				<CardBody className="h-full">
 					{sensor.last_record ? (
-						<MetricChart
-							key={`${sensor.id}-${metricMeta.name}`}
+						<MeasureChart
+							key={`${sensor.id}-${measureMetadata.id}`}
 							sensor={sensor}
-							metricMeta={metricMeta}
-							limit={metricMeta.isBoolean ? 10 : 15}
+							measureMetadata={measureMetadata}
+							count={measureMetadata.is_bool ? 10 : 15}
 							processed={true}
 							date={sensor.last_record}
 							order="desc"
@@ -124,7 +120,7 @@ const SensorLatestMetrics = ({
 								readOnly
 								size="sm"
 								label="Metric"
-								value={metricMeta.displayName}
+								value={measureMetadata.name}
 							/>
 							<DatePicker
 								label="Date"
@@ -136,9 +132,9 @@ const SensorLatestMetrics = ({
 						</div>
 						{datePickerValue ? (
 							<div className="min-w-sm h-64 w-full overflow-x-auto">
-								<MetricChart
+								<MeasureChart
 									sensor={sensor}
-									metricMeta={metricMeta}
+									measureMetadata={measureMetadata}
 									processed={true}
 									date={datePickerValue?.toString()}
 									scroll={true}

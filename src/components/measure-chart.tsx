@@ -10,56 +10,56 @@ import {
 } from "recharts";
 
 import {
-	type Metric,
-	type UseMetricsParams,
-	useMetrics,
-} from "@/hooks/use-metrics";
-import type { MetricMeta, Sensor } from "@/types";
+	type Measure,
+	type UseMeasuresParams,
+	useMeasures,
+} from "@/hooks/use-measures.ts";
+import type { MeasureMetadata, Sensor } from "@/types";
 import { formatDate, formatTime } from "@/utils/datetime";
 import { Skeleton } from "@nextui-org/skeleton";
 
-export interface FormattedMetric extends Metric {
+export interface FormattedMetric extends Measure {
 	formattedValue: string;
 	formattedTime: string;
 }
 
 export type MetricChartProps = {
 	sensor: Sensor;
-	metricMeta: MetricMeta;
+	measureMetadata: MeasureMetadata;
 	scroll?: boolean;
-} & Pick<UseMetricsParams, "limit" | "processed" | "date" | "order">;
+} & Pick<UseMeasuresParams, "count" | "processed" | "date" | "order">;
 
-export const MetricChart = ({
+export const MeasureChart = ({
 	sensor,
-	metricMeta,
+	measureMetadata,
 	date,
-	limit,
+	count,
 	processed,
 	order,
 	scroll = false,
 }: MetricChartProps) => {
-	const { isLoading, metrics } = useMetrics({
+	const { isLoading, measures } = useMeasures({
 		deviceId: sensor.device,
 		sensorId: sensor.id,
 		sensorType: sensor.type,
-		metric: metricMeta.name,
+		name: measureMetadata.id,
 		date: formatDate(date),
 		processed,
-		limit,
+		count,
 		order,
 	});
 	const formatMetricValue = (value: boolean | number) => {
-		return metricMeta.isBoolean
+		return measureMetadata.is_bool
 			? value
 				? "Yes"
 				: "No"
-			: (value as number).toFixed(2) + (metricMeta.unit || "");
+			: (value as number).toFixed(2) + (measureMetadata.unit || "");
 	};
 
 	if (isLoading) {
 		return <Skeleton className="h-full w-full rounded" />;
 	}
-	if (!metrics || metrics.length === 0) {
+	if (!measures || measures.length === 0) {
 		return (
 			<div className="flex h-full flex-col items-center justify-center">
 				<p className="text-default-500">No Data</p>
@@ -67,23 +67,23 @@ export const MetricChart = ({
 		);
 	}
 
-	const data = metrics.map((metric) => ({
+	const data = measures.map((metric) => ({
 		...metric,
 		formattedTime: formatTime(metric.time),
 		formattedValue: formatMetricValue(metric.value),
 	}));
-	const Chart = metricMeta.isBoolean ? MetricBarChart : MetricLineChart;
+	const Chart = measureMetadata.is_bool ? MetricBarChart : MetricLineChart;
 
 	return (
 		<div
 			style={{
 				// 150px is the minimum width to render tooltip
 				// otherwise avoid sparse charts by assigning fixed width (32px) to each dot/bar
-				width: scroll ? `${Math.max(32 * metrics.length, 150)}px` : "100%",
+				width: scroll ? `${Math.max(32 * measures.length, 150)}px` : "100%",
 				height: "100%",
 			}}
 		>
-			<Chart data={data} metricName={metricMeta.name} />
+			<Chart data={data} metricName={measureMetadata.id} />
 		</div>
 	);
 };

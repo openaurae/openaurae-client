@@ -287,6 +287,7 @@ const ExportRecordsButton = ({ device }: { device: Device }) => {
 									Close
 								</Button>
 								<Link
+									download={true}
 									href={`${import.meta.env.VITE_API_BASE_URL || ""}/export/csv/readings?accessToken=${accessToken}&deviceId=${device.id}&start=${value.start.toString()}&end=${value.end.toString()}`}
 								>
 									<Button

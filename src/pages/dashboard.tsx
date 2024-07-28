@@ -1,9 +1,9 @@
 import { DevicesMap } from "@/components/device-map";
-import { MetricChart } from "@/components/metric-chart";
+import { MeasureChart } from "@/components/measure-chart";
 import { subtitle } from "@/components/primitives";
+import { useDevice } from "@/hooks/use-device.ts";
 import { useDevices } from "@/hooks/use-devices";
-import { useDevice } from "@/hooks/user-device";
-import type { Device, MetricMeta, Sensor } from "@/types";
+import type { Device, MeasureMetadata, Sensor } from "@/types";
 import { parseDateValue } from "@/utils/datetime";
 import type { DateValue } from "@internationalized/date";
 import { Card, CardBody } from "@nextui-org/card";
@@ -71,12 +71,12 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 	const { device } = useDevice(deviceId);
 	const [scroll, setScroll] = useState<boolean>(true);
 	const [datePickerValue, setDatePickerValue] = useState<DateValue | undefined>(
-		undefined,
+		parseDateValue(new Date()),
 	);
 	const [selectedSensorId, setSelectedSensorId] = useState<string | undefined>(
 		undefined,
 	);
-	const [selectedMetric, setSelectedMetric] = useState<string | undefined>(
+	const [selectedMeasure, setSelectedMeasure] = useState<string | undefined>(
 		undefined,
 	);
 
@@ -90,21 +90,23 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 			: undefined;
 	}, [device, selectedSensorId]);
 
-	const metricOptions = useMemo(() => {
-		return sensor?.metrics || [];
+	const measureOptions = useMemo(() => {
+		return sensor?.measureMetadata || [];
 	}, [sensor]);
 
-	const metric = useMemo(() => {
-		if (!metricOptions) {
+	const measureMetadata = useMemo(() => {
+		if (!measureOptions) {
 			return undefined;
 		}
 
-		if (!selectedMetric && metricOptions.length === 1) {
-			return metricOptions[0];
+		if (!selectedMeasure && measureOptions.length === 1) {
+			return measureOptions[0];
 		}
 
-		return metricOptions.filter((metric) => metric.name === selectedMetric)[0];
-	}, [selectedMetric, metricOptions]);
+		return measureOptions.filter(
+			(metadata) => metadata.id === selectedMeasure,
+		)[0];
+	}, [selectedMeasure, measureOptions]);
 
 	return (
 		device && (
@@ -133,8 +135,8 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 									<div className="flex flex-col">
 										<span>{sensor.id}</span>
 										<span className="text-tiny text-default-500">
-											{sensor.metrics
-												.map((metric) => metric.displayName)
+											{sensor.measureMetadata
+												.map((metric) => metric.name)
 												.join(", ")}
 										</span>
 									</div>
@@ -142,24 +144,22 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 							)}
 						</Select>
 						<Select
-							items={metricOptions}
-							isDisabled={metricOptions.length === 0}
+							items={measureOptions}
+							isDisabled={measureOptions.length === 0}
 							size="sm"
 							label="Metric"
 							placeholder="Select Metric"
 							className="min-w-20"
-							selectedKeys={metric ? [metric.name] : []}
-							onChange={(e) => setSelectedMetric(e.target.value)}
+							selectedKeys={measureMetadata ? [measureMetadata.id] : []}
+							onChange={(e) => setSelectedMeasure(e.target.value)}
 						>
-							{(metric) => (
-								<SelectItem key={metric.name}>{metric.displayName}</SelectItem>
-							)}
+							{({ id, name }) => <SelectItem key={id}>{name}</SelectItem>}
 						</Select>
 						<DatePicker
 							isDisabled={sensors.length === 0}
 							label="Date"
 							className="max-w-full"
-							value={datePickerValue || parseDateValue(sensor?.last_record)}
+							value={datePickerValue}
 							size="sm"
 							onChange={setDatePickerValue}
 						/>
@@ -167,10 +167,10 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 				</div>
 				<Card className="min-w-sm h-64 w-full overflow-x-auto">
 					<CardBody className="h-full w-full">
-						{sensor && metric && datePickerValue ? (
-							<SensorMetrics
+						{sensor && measureMetadata && datePickerValue ? (
+							<SensorMeasures
 								sensor={sensor}
-								metricMeta={metric}
+								measureMetadata={measureMetadata}
 								date={datePickerValue.toString()}
 								scroll={scroll}
 							/>
@@ -191,22 +191,22 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 	);
 };
 
-const SensorMetrics = ({
+const SensorMeasures = ({
 	sensor,
-	metricMeta,
+	measureMetadata,
 	date,
 	scroll,
 }: {
 	sensor: Sensor;
-	metricMeta: MetricMeta;
+	measureMetadata: MeasureMetadata;
 	date: string | Date;
 	scroll: boolean;
 }) => {
 	return (
-		<MetricChart
-			key={`${sensor.id}-${metricMeta.name}`}
+		<MeasureChart
+			key={`${sensor.id}-${measureMetadata.id}`}
 			sensor={sensor}
-			metricMeta={metricMeta}
+			measureMetadata={measureMetadata}
 			processed={true}
 			date={date}
 			order="asc"

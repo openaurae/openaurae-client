@@ -13,12 +13,12 @@ export interface Sensor {
 	type: string;
 	comments?: string;
 	last_record?: Date;
-	metrics: MetricMeta[];
+	measureMetadata: MeasureMetadata[];
 }
 
-export interface MetricMeta {
+export interface MeasureMetadata {
+	id: string;
 	name: string;
-	displayName: string;
 	unit?: string;
-	isBoolean: boolean;
+	is_bool: boolean;
 }
