@@ -67,11 +67,17 @@ export const MeasureChart = ({
 		);
 	}
 
-	const data = measures.map((metric) => ({
+	let data = measures.map((metric) => ({
 		...metric,
 		formattedTime: formatTime(metric.time),
 		formattedValue: formatMetricValue(metric.value),
 	}));
+
+	if (order === "desc") {
+		// always display data in asc order
+		data = data.reverse();
+	}
+
 	const Chart = measureMetadata.is_bool ? MetricBarChart : MetricLineChart;
 
 	return (
