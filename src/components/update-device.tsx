@@ -63,7 +63,7 @@ export const UpdateDeviceButton = ({ device }: { device: Device }) => {
 						return (
 							<form onSubmit={handleSubmit(onSubmit)}>
 								<ModalHeader className="flex flex-col gap-1">
-									Add Device
+									Update Device
 								</ModalHeader>
 								<ModalBody>
 									<Controller
