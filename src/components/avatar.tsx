@@ -38,20 +38,28 @@ const UserAvatar: React.FC = () => {
 				/>
 			</DropdownTrigger>
 			<DropdownMenu aria-label="Profile Actions" variant="flat">
-				<DropdownItem key="profile" className="h-14 gap-2">
+				<DropdownItem key="profile" className="h-14 gap-2" textValue="My email">
 					<p className="font-semibold">Signed in as</p>
 					<p className="font-semibold">{user.email}</p>
 				</DropdownItem>
-				<DropdownItem key="settings">Settings</DropdownItem>
+				<DropdownItem key="settings" textValue="Settings">
+					Settings
+				</DropdownItem>
 				<DropdownItem
 					key="copy_access_token"
 					color="warning"
 					hidden={!import.meta.env.DEV}
 					onClick={copyAccessToken}
+					textValue="Copy access token"
 				>
 					Copy Access Token
 				</DropdownItem>
-				<DropdownItem key="logout" color="danger" onClick={logout}>
+				<DropdownItem
+					key="logout"
+					color="danger"
+					onClick={logout}
+					textValue="Logout"
+				>
 					Log Out
 				</DropdownItem>
 			</DropdownMenu>
