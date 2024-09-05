@@ -1,4 +1,4 @@
-import DeviceTable from "@/components/device-table";
+import { DeviceTable } from "@/components/device-table";
 
 const DevicesPage = () => {
 	return (

@@ -14,6 +14,7 @@ import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 
 import { useDevices } from "@/hooks/use-devices.ts";
 import { type Device, deviceSchema } from "@/types";
+import { PlusIcon } from "lucide-react";
 import type { z } from "zod";
 
 const formSchema = deviceSchema.pick({
@@ -36,7 +37,13 @@ export const AddDeviceButton = () => {
 
 	return (
 		<>
-			<Button onPress={onOpen} color="primary" size="md">
+			<Button
+				onPress={onOpen}
+				endContent={<PlusIcon size={20} />}
+				color="primary"
+				variant="flat"
+				size="md"
+			>
 				Add Device
 			</Button>
 			<Modal

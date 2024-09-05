@@ -17,7 +17,7 @@ export const get = async <T>({
 }: QueryParams): Promise<T> => {
 	const resp = await _axios.get<T>(url, {
 		headers: {
-			Authorization: `Bearer ${accessToken}`,
+			Authorization: accessToken && `Bearer ${accessToken}`,
 		},
 		params: params,
 	});

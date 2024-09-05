@@ -20,6 +20,7 @@ export const deviceSchema = z.object({
 		.max(50, {
 			message: "device name cannot have more than 50 characters",
 		}),
+	device_type: z.enum(["nemo_cloud", "air_quality", "zigbee"]),
 	latitude: z.coerce
 		.number({
 			message: "latitude must be a number",
@@ -42,6 +43,7 @@ export const deviceSchema = z.object({
 			message: "longitude must >= -180",
 		})
 		.optional(),
+	room: z.string().optional(),
 	last_record: z.string().datetime().optional(),
 	sensor_types: z.string().array().optional(),
 });
