@@ -1,9 +1,11 @@
-import { MeasureChart } from "@/components/measure-chart.tsx";
+import { BackButton } from "@/components/back";
+import { MeasureChart } from "@/components/measure-chart";
 import { subtitle } from "@/components/primitives";
-import { useDevice } from "@/hooks/use-device.ts";
+import { useDevice } from "@/hooks/use-device";
 import type { MeasureMetadata, Sensor } from "@/types";
 import { formatDate, parseDateValue } from "@/utils/datetime";
 import type { DateValue } from "@internationalized/date";
+import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/breadcrumbs";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { DatePicker } from "@nextui-org/date-picker";
 import { Input } from "@nextui-org/input";
@@ -34,7 +36,15 @@ const DeviceDetailsPage = () => {
 
 	return (
 		<section>
-			<h1 className={subtitle()}>Device {device.name || device.id}</h1>
+			<Breadcrumbs>
+				<BreadcrumbItem href="/devices">Devices</BreadcrumbItem>
+				<BreadcrumbItem>{device.id}</BreadcrumbItem>
+			</Breadcrumbs>
+
+			<div className="flex flex-row gap-4 items-center py-4">
+				<BackButton />
+				<h1 className={subtitle()}>Device {device.name || device.id}</h1>
+			</div>
 			<p className="text-default-500 text-sm">
 				Click on cards to view all metrics of sensors
 			</p>
