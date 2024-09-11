@@ -1,7 +1,7 @@
 import useSWR from "swr";
 
 import { useAuth0User } from "@/hooks/use-user";
-import type { Device } from "@/types";
+import type { Device, DeviceWithSensors } from "@/types";
 import { get, postJson, putJson, remove } from "@/utils/query";
 
 export const useDevices = () => {
@@ -9,7 +9,7 @@ export const useDevices = () => {
 
 	const { data, isLoading, mutate, error } = useSWR(
 		accessToken ? { url: "/devices", accessToken } : null,
-		get<Device[]>,
+		get<DeviceWithSensors[]>,
 	);
 
 	const addDevice = async (device: Device) => {

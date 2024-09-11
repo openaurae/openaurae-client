@@ -22,7 +22,7 @@ export const deviceSchema = z.object({
 		.max(50, {
 			message: "device name cannot have more than 50 characters",
 		}),
-	device_type: deviceTypeSchema,
+	type: deviceTypeSchema,
 	latitude: z.coerce
 		.number({
 			message: "latitude must be a number",

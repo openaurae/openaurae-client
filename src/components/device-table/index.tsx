@@ -44,7 +44,7 @@ export function DeviceTable() {
 
 		return deviceTypes === "all"
 			? filtered
-			: filtered.filter(({ device_type }) => deviceTypes.has(device_type));
+			: filtered.filter(({ type }) => deviceTypes.has(type));
 	}, [allDevices, searchCriteria, deviceTypes]);
 
 	const totalPages = useMemo(
