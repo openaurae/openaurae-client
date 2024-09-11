@@ -69,9 +69,9 @@ const DashboardPage = () => {
 
 const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 	const { device } = useDevice(deviceId);
-	const [scroll, setScroll] = useState<boolean>(true);
+	const [scroll, setScroll] = useState<boolean>(false);
 	const [datePickerValue, setDatePickerValue] = useState<DateValue | undefined>(
-		parseDateValue(new Date()),
+		undefined,
 	);
 	const [selectedSensorId, setSelectedSensorId] = useState<string | undefined>(
 		undefined,
@@ -107,6 +107,20 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 			(metadata) => metadata.name === selectedMeasure,
 		)[0];
 	}, [selectedMeasure, measureOptions]);
+
+	const lastRecord = useMemo(() => {
+		if (datePickerValue) {
+			return datePickerValue;
+		}
+
+		if (!sensor || !sensor.last_record) {
+			return undefined;
+		}
+
+		return parseDateValue(sensor.last_record);
+	}, [sensor, datePickerValue]);
+
+	console.log(lastRecord);
 
 	return (
 		device && (
@@ -161,7 +175,7 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 							isDisabled={sensors.length === 0}
 							label="Date"
 							className="max-w-full"
-							value={datePickerValue}
+							value={lastRecord}
 							size="sm"
 							onChange={setDatePickerValue}
 						/>
@@ -169,11 +183,11 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 				</div>
 				<Card className="min-w-sm h-64 w-full overflow-x-auto">
 					<CardBody className="h-full w-full">
-						{sensor && measureMetadata && datePickerValue ? (
+						{sensor && measureMetadata && lastRecord ? (
 							<SensorMeasures
 								sensor={sensor}
 								measureMetadata={measureMetadata}
-								date={datePickerValue.toString()}
+								date={lastRecord.toString()}
 								scroll={scroll}
 							/>
 						) : (
@@ -213,6 +227,7 @@ const SensorMeasures = ({
 			date={date}
 			order="asc"
 			scroll={scroll}
+			dot={scroll}
 		/>
 	);
 };

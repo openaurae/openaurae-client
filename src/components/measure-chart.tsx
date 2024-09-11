@@ -27,9 +27,10 @@ export type MetricChartProps = {
 	sensor: Sensor;
 	metricMetadata: MetricMetadata;
 	scroll?: boolean;
+	dot?: boolean;
 } & Pick<UseMeasuresParams, "count" | "processed" | "date" | "order">;
 
-export const MeasureChart = ({
+export function MeasureChart({
 	sensor,
 	metricMetadata,
 	date,
@@ -37,7 +38,8 @@ export const MeasureChart = ({
 	processed,
 	order,
 	scroll = false,
-}: MetricChartProps) => {
+	dot = true,
+}: MetricChartProps) {
 	const { isLoading, measures } = useMeasures({
 		deviceId: sensor.device,
 		sensorId: sensor.id,
@@ -89,14 +91,15 @@ export const MeasureChart = ({
 				height: "100%",
 			}}
 		>
-			<Chart data={data} metricName={metricMetadata.name} />
+			<Chart data={data} metricName={metricMetadata.name} dot={dot} />
 		</div>
 	);
-};
+}
 
 interface ChartProps {
 	metricName: string;
 	data: FormattedMetric[];
+	dot?: boolean;
 }
 
 const MetricBarChart = ({ metricName, data }: ChartProps) => {
@@ -138,7 +141,7 @@ const MetricBarChart = ({ metricName, data }: ChartProps) => {
 	);
 };
 
-const MetricLineChart = ({ metricName, data }: ChartProps) => {
+const MetricLineChart = ({ metricName, data, dot }: ChartProps) => {
 	const values = data.map((metric) => metric.value) as number[];
 
 	return (
@@ -149,6 +152,7 @@ const MetricLineChart = ({ metricName, data }: ChartProps) => {
 					dataKey="value"
 					strokeWidth={2}
 					type="monotone"
+					dot={dot}
 				/>
 				<YAxis
 					domain={[Math.min(...values), Math.max(...values)]}
