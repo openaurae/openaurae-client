@@ -28,7 +28,10 @@ export function ExportRecordsButton({ device }: { device: Device }) {
 	});
 
 	const url = useMemo(() => {
-		return `${import.meta.env.VITE_API_BASE_URL || ""}/export/csv/readings?accessToken=${accessToken}&deviceId=${device.id}&start=${dateRange.start.toString()}&end=${dateRange.end.toString()}`;
+		const baseUrl = import.meta.env.VITE_API_BASE_URL || "";
+		const start = dateRange.start.toString();
+		const end = dateRange.end.toString();
+		return `${baseUrl}/devices/${device.id}/readings/csv?accessToken=${accessToken}&start=${start}&end=${end}`;
 	}, [accessToken, dateRange, device.id]);
 
 	return (

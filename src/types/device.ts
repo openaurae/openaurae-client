@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const deviceTypeSchema = z.enum(["nemo_cloud", "air_quality", "zigbee"]);
+
 export const deviceSchema = z.object({
 	id: z
 		.string()
@@ -20,7 +22,7 @@ export const deviceSchema = z.object({
 		.max(50, {
 			message: "device name cannot have more than 50 characters",
 		}),
-	device_type: z.enum(["nemo_cloud", "air_quality", "zigbee"]),
+	device_type: deviceTypeSchema,
 	latitude: z.coerce
 		.number({
 			message: "latitude must be a number",

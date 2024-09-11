@@ -14,7 +14,7 @@ import {
 	type UseMeasuresParams,
 	useMeasures,
 } from "@/hooks/use-measures.ts";
-import type { MeasureMetadata, Sensor } from "@/types";
+import type { MetricMetadata, Sensor } from "@/types";
 import { formatDate, formatTime } from "@/utils/datetime";
 import { Skeleton } from "@nextui-org/skeleton";
 
@@ -25,13 +25,13 @@ export interface FormattedMetric extends Measure {
 
 export type MetricChartProps = {
 	sensor: Sensor;
-	measureMetadata: MeasureMetadata;
+	metricMetadata: MetricMetadata;
 	scroll?: boolean;
 } & Pick<UseMeasuresParams, "count" | "processed" | "date" | "order">;
 
 export const MeasureChart = ({
 	sensor,
-	measureMetadata,
+	metricMetadata,
 	date,
 	count,
 	processed,
@@ -42,18 +42,18 @@ export const MeasureChart = ({
 		deviceId: sensor.device,
 		sensorId: sensor.id,
 		sensorType: sensor.type,
-		name: measureMetadata.id,
+		name: metricMetadata.name,
 		date: formatDate(date),
 		processed,
 		count,
 		order,
 	});
 	const formatMetricValue = (value: boolean | number) => {
-		return measureMetadata.is_bool
+		return metricMetadata.is_bool
 			? value
 				? "Yes"
 				: "No"
-			: (value as number).toFixed(2) + (measureMetadata.unit || "");
+			: (value as number).toFixed(2) + (metricMetadata.unit || "");
 	};
 
 	if (isLoading) {
@@ -78,7 +78,7 @@ export const MeasureChart = ({
 		data = data.reverse();
 	}
 
-	const Chart = measureMetadata.is_bool ? MetricBarChart : MetricLineChart;
+	const Chart = metricMetadata.is_bool ? MetricBarChart : MetricLineChart;
 
 	return (
 		<div
@@ -89,7 +89,7 @@ export const MeasureChart = ({
 				height: "100%",
 			}}
 		>
-			<Chart data={data} metricName={measureMetadata.id} />
+			<Chart data={data} metricName={metricMetadata.name} />
 		</div>
 	);
 };

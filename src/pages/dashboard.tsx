@@ -3,7 +3,7 @@ import { MeasureChart } from "@/components/measure-chart";
 import { subtitle } from "@/components/primitives";
 import { useDevice } from "@/hooks/use-device.ts";
 import { useDevices } from "@/hooks/use-devices";
-import type { Device, MeasureMetadata, Sensor } from "@/types";
+import type { Device, MetricMetadata, Sensor } from "@/types";
 import { parseDateValue } from "@/utils/datetime";
 import type { DateValue } from "@internationalized/date";
 import { Card, CardBody } from "@nextui-org/card";
@@ -91,7 +91,7 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 	}, [device, selectedSensorId]);
 
 	const measureOptions = useMemo(() => {
-		return sensor?.measureMetadata || [];
+		return sensor?.metricsMetadata || [];
 	}, [sensor]);
 
 	const measureMetadata = useMemo(() => {
@@ -104,7 +104,7 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 		}
 
 		return measureOptions.filter(
-			(metadata) => metadata.id === selectedMeasure,
+			(metadata) => metadata.name === selectedMeasure,
 		)[0];
 	}, [selectedMeasure, measureOptions]);
 
@@ -135,8 +135,8 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 									<div className="flex flex-col">
 										<span>{sensor.id}</span>
 										<span className="text-tiny text-default-500">
-											{sensor.measureMetadata
-												.map((metric) => metric.name)
+											{sensor.metricsMetadata
+												.map((metric) => metric.display_name)
 												.join(", ")}
 										</span>
 									</div>
@@ -150,10 +150,12 @@ const DeviceCard = ({ deviceId }: { deviceId: string }) => {
 							label="Metric"
 							placeholder="Select Metric"
 							className="min-w-20"
-							selectedKeys={measureMetadata ? [measureMetadata.id] : []}
+							selectedKeys={measureMetadata ? [measureMetadata.name] : []}
 							onChange={(e) => setSelectedMeasure(e.target.value)}
 						>
-							{({ id, name }) => <SelectItem key={id}>{name}</SelectItem>}
+							{({ name, display_name }) => (
+								<SelectItem key={name}>{display_name}</SelectItem>
+							)}
 						</Select>
 						<DatePicker
 							isDisabled={sensors.length === 0}
@@ -198,15 +200,15 @@ const SensorMeasures = ({
 	scroll,
 }: {
 	sensor: Sensor;
-	measureMetadata: MeasureMetadata;
+	measureMetadata: MetricMetadata;
 	date: string | Date;
 	scroll: boolean;
 }) => {
 	return (
 		<MeasureChart
-			key={`${sensor.id}-${measureMetadata.id}`}
+			key={`${sensor.id}-${measureMetadata.name}`}
 			sensor={sensor}
-			measureMetadata={measureMetadata}
+			metricMetadata={measureMetadata}
 			processed={true}
 			date={date}
 			order="asc"

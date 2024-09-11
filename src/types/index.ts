@@ -1,24 +1,30 @@
 import type { SVGProps } from "react";
+import type { Device } from "./device";
+import type { Sensor } from "./sensor";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
 	size?: number;
 };
 
 export { type Device, deviceSchema } from "./device";
+export {
+	type Sensor,
+	type SensorType,
+	sensorSchema,
+	sensorTypeSchema,
+} from "./sensor";
 
-export interface Sensor {
-	id: string;
-	device: string;
-	name?: string;
-	type: string;
-	comments?: string;
-	last_record?: Date;
-	measureMetadata: MeasureMetadata[];
-}
-
-export interface MeasureMetadata {
-	id: string;
+export interface MetricMetadata {
 	name: string;
+	display_name: string;
 	unit?: string;
 	is_bool: boolean;
+}
+
+export interface SensorWithMetadata extends Sensor {
+	metricsMetadata: MetricMetadata[];
+}
+
+export interface DeviceWithSensors extends Device {
+	sensors: SensorWithMetadata[];
 }

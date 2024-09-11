@@ -1,7 +1,7 @@
 import useSWR from "swr";
 
 import { useAuth0User } from "@/hooks/use-user";
-import type { MeasureMetadata } from "@/types";
+import type { MetricMetadata } from "@/types";
 import { formatDate } from "@/utils/datetime";
 import { get } from "@/utils/query";
 
@@ -25,10 +25,8 @@ export interface Measure {
 export const useMeasures = ({
 	deviceId,
 	sensorId,
-	sensorType,
 	name,
 	date,
-	page,
 	count,
 	order,
 	processed = true,
@@ -38,16 +36,12 @@ export const useMeasures = ({
 	const { data, isLoading, error } = useSWR(
 		accessToken
 			? {
-					url: "/measures",
+					url: `/devices/${deviceId}/sensors/${sensorId}/metrics/${name}`,
 					accessToken,
-					deviceId,
-					sensorId,
-					sensorType,
 					name: name,
 					date: formatDate(date),
 					processed,
-					page,
-					count,
+					limit: count,
 					order,
 				}
 			: null,
@@ -67,18 +61,18 @@ export const useMeasureMetadata = async () => {
 	const { data, isLoading, error } = useSWR(
 		accessToken
 			? {
-					url: "/metadata/measures",
+					url: "/metadata/metrics",
 					accessToken,
 				}
 			: null,
-		get<MeasureMetadata[]>,
+		get<MetricMetadata[]>,
 	);
 
 	const metas = data || [];
-	const map = new Map<string, MeasureMetadata>();
+	const map = new Map<string, MetricMetadata>();
 
 	for (const metadata of metas) {
-		map.set(metadata.id, metadata);
+		map.set(metadata.name, metadata);
 	}
 
 	return {

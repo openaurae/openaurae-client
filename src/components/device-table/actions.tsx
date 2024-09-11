@@ -1,5 +1,5 @@
 import { DeleteDeviceButton } from "@/components/device/delete.tsx";
-import { ExportRecordsButton } from "@/components/device/export-csv.tsx";
+import { ExportRecordsButton } from "@/components/device/export.tsx";
 import { UpdateDeviceButton } from "@/components/device/update.tsx";
 import type { Device } from "@/types";
 import { cn } from "@/utils";
